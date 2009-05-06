@@ -7,7 +7,7 @@ class Element
   end
   
   def attr_get(name)
-    String.new(`#{@native}.attr(#{name})`)
+    String.new(`#{@native}.attr(#{name}.__value__)`)
   end
   
   def attr_set(name, value)
