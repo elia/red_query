@@ -1,5 +1,6 @@
+require 'lib/ajax'
+require 'lib/cookie'
 require 'lib/document'
 require 'lib/json'
-require 'lib/ajax'
 require 'lib/location'
-require 'lib/cookie'
+require 'lib/string'
