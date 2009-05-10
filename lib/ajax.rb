@@ -18,7 +18,7 @@ module Ajax
   
   def self.requestJSON(method, url, success_proc, problem_proc, data)
     success_callback = lambda { |text|
-      success_proc.call(JSON.parse(text))
+      success_proc.call(::JSON.parse(text))
     }
     self.request(method, url, success_callback, problem_proc, data)
   end
