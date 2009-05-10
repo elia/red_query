@@ -46,6 +46,18 @@ class Element
     `#{@native}.html(#{value}.__value__)`
   end
   
+  def height
+    `#{@native}.height()`
+  end
+  
+  def left(pos = nil)
+    if pos.nil?
+      `#{@native}.left()`
+    else
+      `#{@native}.left(#{pos})`
+    end
+  end
+
   def name
     self.attr_get("name")
   end
@@ -57,9 +69,21 @@ class Element
   def submit(&block)
     `#{@native}.submit(function () { return #{block.call} })`
   end
+  
+  def top(pos = nil)
+    if pos.nil?
+      `#{@native}.top()`
+    else
+      `#{@native}.top(#{pos})`
+    end
+  end
 
   def value
     String.new(`#{@native}.val()`)
+  end
+
+  def width
+    `#{@native}.width()`
   end
 
 end
