@@ -21,6 +21,22 @@ class Element
   def css(key, value)
     `#{@native}.css(#{key}.__value__, #{value}.__value__)`
   end
+
+  def find(css_selector)
+    `var result = jQuery(#{css_selector}.__value__)`
+    count = `result.length`
+    
+    return nil if count == 0
+    
+    return Element.new(`result`) if css_selector.substr(0, 1) == '#'
+    
+    elements = []
+    count.times { |i| elements.push(Element.new(`jQuery(result[#{i}])`)) }
+    return elements
+  end
+  def self.[](css_selector)
+    self.find(css_selector)
+  end
   
   def focus
     `#{@native}.focus()`
