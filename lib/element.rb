@@ -6,19 +6,19 @@ class Element
     @native = native
   end
   
-  def attr_get(name)
-    String.new(`#{@native}.attr(#{name}.__value__)`)
-  end
-  
-  def attr_set(name, value)
-    `#{@native}.attr(#{name}.__value__, #{value}.__value__)`
+  def attr(name, value = nil)
+    if value.nil?
+      String.new(`#{@native}.attr(#{name}.__value__)`)
+    else
+      `#{@native}.attr(#{name}.__value__, #{value}.__value__)`
+    end
   end
   
   def click(&block)
     `#{@native}.click(function () { return #{block.call} })`
   end  
 
-  def css(key, value = nil)
+  def css(key, value = nil, debug = false)
     if value.nil?
       String.new(`#{@native}.css(#{key}.__value__)`)
     else
@@ -30,7 +30,7 @@ class Element
   # returns matching element if _css_selector_ starts with "#"
   # returns array of matching elements if _css_selector_ has matches
   def find(css_selector)
-    `var result = jQuery(#{css_selector}.__value__)`
+    `var result = #{@native}.find(#{css_selector}.__value__)`
     count = `result.length`
     
     return nil if count == 0
@@ -56,8 +56,12 @@ class Element
     `#{@native}.focus()`
   end
   
-  def html(value)
-    `#{@native}.html(#{value}.__value__)`
+  def html(value = nil)
+    if value.nil?
+      String.new(`#{@native}.html()`)
+    else
+      `#{@native}.html(#{value}.__value__)`
+    end
   end
   
   def height
@@ -73,11 +77,11 @@ class Element
   end
 
   def name
-    self.attr_get("name")
+    attr("name")
   end
   
   def name=(value)
-    self.attr_set("name", value)
+    attr("name", value)
   end
   
   def submit(&block)
