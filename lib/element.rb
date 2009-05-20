@@ -18,10 +18,17 @@ class Element
     `#{@native}.click(function () { return #{block.call} })`
   end  
 
-  def css(key, value)
-    `#{@native}.css(#{key}.__value__, #{value}.__value__)`
+  def css(key, value = nil)
+    if value.nil?
+      String.new(`#{@native}.css(#{key}.__value__)`)
+    else
+      `#{@native}.css(#{key}.__value__, #{value}.__value__)`
+    end
   end
 
+  # returns nil if _css_selector_ has no match
+  # returns matching element if _css_selector_ starts with "#"
+  # returns array of matching elements if _css_selector_ has matches
   def find(css_selector)
     `var result = jQuery(#{css_selector}.__value__)`
     count = `result.length`
@@ -34,6 +41,13 @@ class Element
     count.times { |i| elements.push(Element.new(`jQuery(result[#{i}])`)) }
     return elements
   end
+  
+  def find_first(css_selector)
+    result = find(css_selector)
+    return nil if result.nil?
+    result[0]
+  end
+  
   def self.[](css_selector)
     self.find(css_selector)
   end
