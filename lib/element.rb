@@ -6,6 +6,14 @@ class Element
     @native = native
   end
   
+  def self.from_html(html)
+    Element.new(`jQuery(#{html}.__value__)`)
+  end
+  
+  def append(elem)
+    `#{@native}.append(#{elem}.__native__)`
+  end
+  
   def attr(name, value = nil)
     if value.nil?
       String.new(`#{@native}.attr(#{name}.__value__)`)
