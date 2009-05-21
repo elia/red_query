@@ -96,8 +96,12 @@ class Element
     end
   end
 
-  def value
-    String.new(`#{@native}.val()`)
+  def value(str = nil)
+    if str.nil?
+      String.new(`#{@native}.val()`)
+    else
+      `#{@native}.val(str.__value__)`
+    end
   end
 
   def width
