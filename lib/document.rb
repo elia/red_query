@@ -4,7 +4,11 @@ module Document
   def self.[](css_selector)
     self.query(css_selector)
   end
-
+  
+  def self.find(css_selector)
+    self.query(css_selector)
+  end
+  
   def self.query(css_selector)
     Element.new(`jQuery(document)`).find(css_selector)
   end

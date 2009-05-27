@@ -1,6 +1,23 @@
 
 # represents one or more jQuery Elements
-class Element
+class Element < Array
+  
+  def [](index)
+    Element.new(`jQuery(#{@native}[#{index}])`)
+  end
+  
+  def length
+    `#{@native}.length`
+  end
+  
+  def size
+    length
+  end
+  
+  def each
+    length.times { |i| yield self[i] }
+  end
+  
   def initialize(native)
     `#{self}.__native__ = #{native}`
     @native = native
@@ -23,7 +40,15 @@ class Element
   end
   
   def click(&block)
-    `#{@native}.click(function () { return #{block.call} })`
+    callback = Proc.new { |native_event|
+      block.call({
+        :client_x => `#{native_event}.clientX`,
+        :client_y => `#{native_event}.clientY`,
+      })
+    }
+    `#{@native}.click(function (event) {  
+      return #{callback}.m$call(event);
+    })`
   end  
 
   def css(key, value = nil, debug = false)
@@ -34,20 +59,8 @@ class Element
     end
   end
 
-  # returns nil if _css_selector_ has no match
-  # returns matching element if _css_selector_ starts with "#"
-  # returns array of matching elements if _css_selector_ has matches
   def find(css_selector)
-    `var result = #{@native}.find(#{css_selector}.__value__)`
-    count = `result.length`
-    
-    return nil if count == 0
-    
-    return Element.new(`result`) if css_selector.substr(0, 1) == '#'
-    
-    elements = []
-    count.times { |i| elements.push(Element.new(`jQuery(result[#{i}])`)) }
-    return elements
+    Element.new(`#{@native}.find(#{css_selector}.__value__)`)
   end
   
   def find_first(css_selector)
@@ -78,7 +91,7 @@ class Element
   
   def left(pos = nil)
     if pos.nil?
-      `#{@native}.left()`
+      `#{@native}.offset().left`
     else
       `#{@native}.left(#{pos})`
     end
