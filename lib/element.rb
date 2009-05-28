@@ -3,11 +3,11 @@
 class Element < Array
   
   def [](index)
-    Element.new(`jQuery(#{@native}[#{index}])`)
+    Element.new(`jQuery(#{@jq_native}[#{index}])`)
   end
   
   def length
-    `#{@native}.length`
+    `#{@jq_native}.length`
   end
   
   def size
@@ -18,9 +18,9 @@ class Element < Array
     length.times { |i| yield self[i] }
   end
   
-  def initialize(native)
-    `#{self}.__native__ = #{native}`
-    @native = native
+  def initialize(jq_native)
+    `#{self}.__jq_native__ = #{jq_native}`
+    @jq_native = jq_native
   end
   
   def self.from_html(html)
@@ -28,14 +28,14 @@ class Element < Array
   end
   
   def append(elem)
-    `#{@native}.append(#{elem}.__native__)`
+    `#{@jq_native}.append(#{elem}.__jq_native__)`
   end
   
   def attr(name, value = nil)
     if value.nil?
-      String.new(`#{@native}.attr(#{name}.__value__)`)
+      String.new(`#{@jq_native}.attr(#{name}.__value__)`)
     else
-      `#{@native}.attr(#{name}.__value__, #{value}.__value__)`
+      `#{@jq_native}.attr(#{name}.__value__, #{value}.__value__)`
     end
   end
   
@@ -46,21 +46,21 @@ class Element < Array
         :client_y => `#{native_event}.clientY`,
       })
     }
-    `#{@native}.click(function (event) {  
+    `#{@jq_native}.click(function (event) {  
       return #{callback}.m$call(event);
     })`
   end  
 
   def css(key, value = nil, debug = false)
     if value.nil?
-      String.new(`#{@native}.css(#{key}.__value__)`)
+      String.new(`#{@jq_native}.css(#{key}.__value__)`)
     else
-      `#{@native}.css(#{key}.__value__, #{value}.__value__)`
+      `#{@jq_native}.css(#{key}.__value__, #{value}.__value__)`
     end
   end
 
   def find(css_selector)
-    Element.new(`#{@native}.find(#{css_selector}.__value__)`)
+    Element.new(`#{@jq_native}.find(#{css_selector}.__value__)`)
   end
   
   def find_first(css_selector)
@@ -74,26 +74,26 @@ class Element < Array
   end
   
   def focus
-    `#{@native}.focus()`
+    `#{@jq_native}.focus()`
   end
   
   def html(value = nil)
     if value.nil?
-      String.new(`#{@native}.html()`)
+      String.new(`#{@jq_native}.html()`)
     else
-      `#{@native}.html(#{value}.__value__)`
+      `#{@jq_native}.html(#{value}.__value__)`
     end
   end
   
   def height
-    `#{@native}.height()`
+    `#{@jq_native}.height()`
   end
   
   def left(pos = nil)
     if pos.nil?
-      `#{@native}.offset().left`
+      `#{@jq_native}.offset().left`
     else
-      `#{@native}.left(#{pos})`
+      `#{@jq_native}.left(#{pos})`
     end
   end
 
@@ -106,27 +106,27 @@ class Element < Array
   end
   
   def submit(&block)
-    `#{@native}.submit(function () { return #{block.call} })`
+    `#{@jq_native}.submit(function () { return #{block.call} })`
   end
   
   def top(pos = nil)
     if pos.nil?
-      `#{@native}.top()`
+      `#{@jq_native}.top()`
     else
-      `#{@native}.top(#{pos})`
+      `#{@jq_native}.top(#{pos})`
     end
   end
 
   def value(str = nil)
     if str.nil?
-      String.new(`#{@native}.val()`)
+      String.new(`#{@jq_native}.val()`)
     else
-      `#{@native}.val(str.__value__)`
+      `#{@jq_native}.val(str.__value__)`
     end
   end
 
   def width
-    `#{@native}.width()`
+    `#{@jq_native}.width()`
   end
 
 end

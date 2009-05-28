@@ -1,35 +1,31 @@
 class JSON
   # ======= Parsing =============================================
   def self.parse(text)
-    @native = `eval("("+#{text}.__value__+")");`
-    return JSON.translate(@native)
+    json_native = `eval("("+#{text}.__value__+")");`
+    JSON.translate(json_native)
   end
   
-  def self.classify(native)
-    type = String.new(`typeof #{native}`)
-    if (type == 'object' && `!#{native}`)
+  def self.classify(js_native)
+    type = String.new(`typeof #{js_native}`)
+    if (type == 'object' && `!#{js_native}`)
       return "null"
     end
-    if (type == 'object' && `Object.prototype.toString.apply(#{native}) === '[object Array]'`)
+    if (type == 'object' && `Object.prototype.toString.apply(#{js_native}) === '[object Array]'`)
       return "array"
     end
     return type
   end
   
-  def self.translate_array(native)
-    natives = []
-    `for (var i=0; i<#{native}.length; i++) { #{natives}.push(#{native}[i]); }`
-    
-    elems = []
-    natives.each { |x|
-      elems.push(JSON.translate(x))
-    }
-    return elems
+  def self.translate_array(js_native)
+    js_natives = []
+    `for (var i=0; i<#{js_native}.length; i++) { #{js_natives}.push(#{js_native}[i]); }`
+
+    js_natives.collect { |x| JSON.translate(x) }
   end
   
-  def self.translate_object(native)
+  def self.translate_object(js_native)
     stuff = []
-    `for(var member in #{native}){#{stuff}.push(new Array($q(member), #{native}[member]));}`
+    `for(var member in #{js_native}){#{stuff}.push(new Array($q(member), #{js_native}[member]));}`
 
     obj = {}
     stuff.each { |x|
@@ -40,22 +36,22 @@ class JSON
     return obj
   end
   
-  def self.translate(native)
-    type = JSON.classify(native)
+  def self.translate(js_native)
+    type = JSON.classify(js_native)
     if (type == 'string')
-      return String.new(native)
+      return String.new(js_native)
     end
     
     if (type == 'number' || type == 'boolean')
-      return native
+      return js_native
     end
     
     if (type == 'array')
-      return JSON.translate_array(native)
+      return JSON.translate_array(js_native)
     end
     
     if (type == 'object')
-      return JSON.translate_object(native)
+      return JSON.translate_object(js_native)
     end
     
     return nil
@@ -93,7 +89,7 @@ class JSON
                 '"' + string.replace(escapable, function (a) {
                     var c = meta[a];
                     return typeof c === 'string' ? c :
-                        '\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
+                        '\\\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
                 }) + '"' :
                 '"' + string + '"';
         }

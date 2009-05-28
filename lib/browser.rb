@@ -1,13 +1,17 @@
 class Browser
   @@history = nil
   
-  def ie?
+  def self.ie?
     return `jQuery.browser.msie`
+  end
+  
+  def self.version
+    `parseInt(jQuery.browser.version)`
   end
   
   def self.history
     if @@history.nil?
-      if `jQuery.browser.msie && parseInt(jQuery.browser.version) < 8`
+      if Browser.ie? && Browser.version < 8
         @@history = ::HistoryIE.new
       else
         @@history = ::HistoryNormal.new
