@@ -134,4 +134,8 @@ class JSON
     
     return "null"
   end
+  
+  def self.generate(stuff)
+    self.stringify(stuff)
+  end
 end

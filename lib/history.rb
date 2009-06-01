@@ -13,7 +13,6 @@ class HistoryIE
   def initialize
     @iframe = Element.from_html('<iframe style="display:none" src="javascript:false;"></iframe>')
     Document.query('head')[0].append(@iframe)
-    # set ( "stuff" ) ????
   end
   
   def set(hash)

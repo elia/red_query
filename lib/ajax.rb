@@ -32,6 +32,12 @@ module Ajax
     def to_query_string(base = '')
       query_string = []
       self.each do |k,v|
+        if `#{v} === false` 
+          v = "false"
+        end
+        if `#{v} === true` 
+          v = "true"
+        end
         next if v.nil?
         k = base.empty? ? k.to_s : "%s[%s]" % [base,k]
         case v
