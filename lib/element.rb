@@ -50,6 +50,18 @@ class Element < Array
       return #{callback}.m$call(event);
     })`
   end  
+  
+  def add_class(css_class)
+    `#{@jq_native}.addClass(#{css_class}.__value__)`
+  end
+
+  def has_class(css_class)
+    `#{@jq_native}.hasClass(#{css_class}.__value__)`
+  end
+  
+  def remove_class(css_class)
+    `#{@jq_native}.removeClass(#{css_class}.__value__)`
+  end
 
   def css(key, value = nil, debug = false)
     if value.nil?
@@ -103,6 +115,10 @@ class Element < Array
   
   def name=(value)
     attr("name", value)
+  end
+  
+  def remove
+    `#{@jq_native}.remove()`
   end
   
   def submit(&block)
