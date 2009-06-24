@@ -31,6 +31,10 @@ class Element < Array
     `#{@jq_native}.append(#{elem}.__jq_native__)`
   end
   
+  def before(elem)
+    `#{@jq_native}.before(#{elem}.__jq_native__)`
+  end
+  
   def attr(name, value = nil)
     if value.nil?
       String.new(`#{@jq_native}.attr(#{name}.__value__)`)
@@ -40,15 +44,8 @@ class Element < Array
   end
   
   def click(&block)
-    callback = Proc.new { |native_event|
-      block.call({
-        :client_x => `#{native_event}.clientX`,
-        :client_y => `#{native_event}.clientY`,
-      })
-    }
-    `#{@jq_native}.click(function (event) {  
-      return #{callback}.m$call(event);
-    })`
+    callback = mouse_event(block)
+    `#{@jq_native}.click(function (event) { return #{callback}.m$call(event); })`
   end  
   
   def add_class(css_class)
@@ -108,6 +105,68 @@ class Element < Array
       `#{@jq_native}.left(#{pos})`
     end
   end
+  
+  def key_event(block)
+    Proc.new { |native_event|
+      block.call({
+        :code  => `#{native_event}.keyCode`,
+        :shift => `#{native_event}.shiftKey`,
+        :ctrl  => `#{native_event}.ctrlKey`,
+        :meta  => `#{native_event}.metaKey`,
+        :prevent => Proc.new { `#{native_event}.preventDefault()` },
+      })
+    }
+  end
+  
+  def key_down(&block)
+    callback = key_event(block)
+    `#{@jq_native}.keydown(function (event) { return #{callback}.m$call(event); })`
+  end
+  
+  def key_press(&block)
+    callback = key_event(block)
+    `#{@jq_native}.keydown(function (event) { return #{callback}.m$call(event); })`
+  end
+  
+  def key_up(&block)
+    callback = key_event(block)
+    `#{@jq_native}.keydown(function (event) { return #{callback}.m$call(event); })`
+  end
+  
+  def mouse_event(block)
+    Proc.new { |native_event|
+      block.call({
+        :client_x => `#{native_event}.pageX`,
+        :client_y => `#{native_event}.pageY`,
+        :prevent => Proc.new { `#{native_event}.preventDefault()` },
+      })
+    }
+  end
+  
+  def mouse_enter(&block)
+    callback = mouse_event(block)
+    `#{@jq_native}.mouseenter(function (event) { return #{callback}.m$call(event); })`
+  end
+  
+  def mouse_leave(&block)
+    callback = mouse_event(block)
+    `#{@jq_native}.mouseleave(function (event) { return #{callback}.m$call(event); })`
+  end
+  
+  def mouse_over(&block)
+    callback = mouse_event(block)
+    `#{@jq_native}.mouseover(function (event) { return #{callback}.m$call(event); })`
+  end
+
+  def mouse_move(&block)
+    callback = mouse_event(block)
+    `#{@jq_native}.mousemove(function (event) { return #{callback}.m$call(event); })`
+  end
+
+  def mouse_out(&block)
+    callback = mouse_event(block)
+    `#{@jq_native}.mouseout(function (event) { return #{callback}.m$call(event); })`
+  end
 
   def name
     attr("name")
@@ -127,7 +186,7 @@ class Element < Array
   
   def top(pos = nil)
     if pos.nil?
-      `#{@jq_native}.top()`
+      `#{@jq_native}.offset().top`
     else
       `#{@jq_native}.top(#{pos})`
     end
