@@ -2,6 +2,8 @@
 # represents one or more jQuery Elements
 class Element < Array
   
+  @@element_id_count = 0
+  
   def [](index)
     Element.new(`jQuery(#{@jq_native}[#{index}])`)
   end
@@ -27,8 +29,27 @@ class Element < Array
     Element.new(`jQuery(#{html}.__value__)`)
   end
   
+  # returns attr('id') of element. if none exists, one will be assigned
+  def id
+    id = attr('id')
+    return id unless id == ""
+    
+    @@element_id_count += 1
+    id = "red_query_elem_#{@@element_id_count}"
+    attr('id', id)
+    return id
+  end
+  
   def append(elem)
     `#{@jq_native}.append(#{elem}.__jq_native__)`
+  end
+  
+  def prepend(elem)
+    `#{@jq_native}.prepend(#{elem}.__jq_native__)`
+  end
+
+  def after(elem)
+    `#{@jq_native}.after(#{elem}.__jq_native__)`
   end
   
   def before(elem)
@@ -135,12 +156,27 @@ class Element < Array
   
   def mouse_event(block)
     Proc.new { |native_event|
+      # `console.log(#{native_event})`
       block.call({
-        :client_x => `#{native_event}.pageX`,
-        :client_y => `#{native_event}.pageY`,
+        :client_x => `#{native_event}.clientX`,
+        :client_y => `#{native_event}.clientY`,
+        :page_x => `#{native_event}.pageX`,
+        :page_y => `#{native_event}.pageY`,
+        :screen_x => `#{native_event}.screenX`,
+        :screen_y => `#{native_event}.screenY`,
         :prevent => Proc.new { `#{native_event}.preventDefault()` },
       })
     }
+  end
+  
+  def mouse_down(&block)
+    callback = mouse_event(block)
+    `#{@jq_native}.mousedown(function (event) { return #{callback}.m$call(event); })`
+  end
+  
+  def mouse_up(&block)
+    callback = mouse_event(block)
+    `#{@jq_native}.mouseup(function (event) { return #{callback}.m$call(event); })`
   end
   
   def mouse_enter(&block)
