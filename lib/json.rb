@@ -13,7 +13,7 @@ class JSON
     if (type == 'object' && `Object.prototype.toString.apply(#{js_native}) === '[object Array]'`)
       return "array"
     end
-    return type
+    type
   end
   
   def self.translate_array(js_native)
@@ -60,9 +60,9 @@ class JSON
   # ======= Stringify =============================================
   def self.classify_ruby(stuff)
     if (stuff.class)
-      return stuff.class.inspect
+      return stuff.class.inspect.split("::").last
     end
-    return "Boolean"
+    "Boolean"
   end
   
   def self.stringify_string(str)
@@ -132,7 +132,7 @@ class JSON
       return JSON.stringify_hash(stuff)
     end
     
-    return "null"
+    "null"
   end
   
   def self.generate(stuff)
