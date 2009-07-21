@@ -1,26 +1,24 @@
 module Ajax
-  def self.request(method, url, success_proc, problem_proc, data)
-    params = data.to_query_string
-    success_callback = lambda { |text|
-      success_proc.call(String.new(text))
-    }
-    error_callback = lambda { |msg|
-      problem_proc.call(String.new(msg))
-    }
+  def self.request(options)
+    options[:data] = options[:data] || {}
+    params = options[:data].to_query_string
+    success_callback = Proc.new { |text| options[:success].call(String.new(text)) }
+    error_callback = Proc.new { |msg| options[:problem].call(String.new(msg)) }
+    
     `jQuery.ajax({
-      url:#{url}.__value__, 
-      type:#{method}.__value__, 
+      url:#{options[:url]}.__value__, 
+      type:#{options[:method]}.__value__, 
       data:#{params}.__value__,
       success: function(msg) { return #{success_callback}.m$call(msg); },
       error: function(xhr,msg) { return #{error_callback}.m$call(msg); }
     })`
   end
   
-  def self.requestJSON(method, url, success_proc, problem_proc, data)
-    success_callback = lambda { |text|
-      success_proc.call(::JSON.parse(text))
-    }
-    self.request(method, url, success_callback, problem_proc, data)
+  def self.requestJSON(options)
+    orig_success = options[:success]
+    options[:success] = Proc.new { |text| orig_success.call(JSON.parse(text)) }
+    
+    self.request(options)
   end
   
   class ::Hash
