@@ -95,7 +95,8 @@ class Element < Array
   
   def find_first(css_selector)
     result = find(css_selector)
-    return nil if result.nil?
+    throw "[red_query] not found: #{css_selector}" unless result
+    # return nil unless result
     result[0]
   end
   
