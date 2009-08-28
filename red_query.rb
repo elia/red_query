@@ -1,3 +1,4 @@
+require 'lib/observable'
 require 'lib/json'
 require 'lib/ajax'
 require 'lib/browser'

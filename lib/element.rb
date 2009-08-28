@@ -241,4 +241,7 @@ class Element < Array
     `#{@jq_native}.width()`
   end
 
+  def parent
+    Element.new(`#{@jq_native}.parent()`)
+  end
 end
