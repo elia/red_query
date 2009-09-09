@@ -18,6 +18,10 @@ module Events
     }
   end
   
+  def has_event?(event_name)
+    !!@events[event_name]
+  end
+  
   # registers Proc for given _event_name_
   #
   # eg:
