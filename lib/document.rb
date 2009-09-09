@@ -18,6 +18,6 @@ module Document
   end
   
   def self.ready!
-    @ready_proc.call
+    @ready_proc.call if @ready_proc
   end
 end
