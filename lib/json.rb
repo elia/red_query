@@ -1,6 +1,7 @@
 class JSON
   # ======= Parsing =============================================
   def self.parse(text)
+    raise "[JSON.parse] empty JSON-String" if text == ""
     json_native = `eval("("+#{text}.__value__+")");`
     JSON.translate(json_native)
   end
