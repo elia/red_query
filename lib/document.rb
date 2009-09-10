@@ -1,6 +1,11 @@
 require 'lib/element'
 
 module Document
+  def self.as_element
+    return @elem if @elem
+    @elem = Element.new(`jQuery(document)`)
+  end
+  
   def self.[](css_selector)
     self.query(css_selector)
   end
@@ -10,7 +15,7 @@ module Document
   end
   
   def self.query(css_selector)
-    Element.new(`jQuery(document)`).find(css_selector)
+    self.as_element.find(css_selector)
   end
   
   def self.ready?(&block)
