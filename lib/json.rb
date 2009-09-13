@@ -140,3 +140,10 @@ class JSON
     self.stringify(stuff)
   end
 end
+
+
+class Hash
+  def to_json
+    JSON.generate(self)
+  end
+end

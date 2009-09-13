@@ -21,8 +21,14 @@ module Observable
     @_observers = []
   end
   
-  def notify_observers(*args)
-    @_observers.each { |o| o.update(*args) }
+  def delete_observer(observer)
+    return unless @_observers
+    @_observers.delete(observer)
+  end
+  
+  def notify_observers(a, b, c, d, e, f, g, h)
+    return unless @_observers
+    @_observers.each { |o| o.update(a, b, c, d, e, f, g, h) }
     @_observe_state = false
   end
 end

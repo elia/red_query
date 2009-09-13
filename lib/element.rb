@@ -156,6 +156,8 @@ class Element < Array
   end
   
   def mouse_event(block)
+    preventer = Proc.new { `#{native_event}.preventDefault()` }
+    
     Proc.new { |native_event|
       # `console.log(#{native_event})`
       block.call({
@@ -165,7 +167,7 @@ class Element < Array
         :page_y => `#{native_event}.pageY`,
         :screen_x => `#{native_event}.screenX`,
         :screen_y => `#{native_event}.screenY`,
-        :prevent => Proc.new { `#{native_event}.preventDefault()` },
+        :prevent => preventer,
       })
     }
   end
@@ -180,15 +182,15 @@ class Element < Array
     `#{@jq_native}.mouseup(function (event) { return #{callback}.m$call(event); })`
   end
   
-  def mouse_enter(&block)
-    callback = mouse_event(block)
-    `#{@jq_native}.mouseenter(function (event) { return #{callback}.m$call(event); })`
-  end
+  # def mouse_enter(&block)
+  #   callback = mouse_event(block)
+  #   `#{@jq_native}.mouseenter(function (event) { return #{callback}.m$call(event); })`
+  # end
   
-  def mouse_leave(&block)
-    callback = mouse_event(block)
-    `#{@jq_native}.mouseleave(function (event) { return #{callback}.m$call(event); })`
-  end
+  # def mouse_leave(&block)
+  #   callback = mouse_event(block)
+  #   `#{@jq_native}.mouseleave(function (event) { return #{callback}.m$call(event); })`
+  # end
   
   def mouse_over(&block)
     callback = mouse_event(block)
