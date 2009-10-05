@@ -1,12 +1,22 @@
 = jQuery based Framework for Red
 
 Provides DOM, Ajax, JSON functionality for Red. Heavy usage of jQuery.
+Its been developed for my personal fork of Red: http://github.com/julius/red
 
 === Usage
 
 Of course you need jQuery and your own source. In addition you need a little startup code.
   <script src="jquery.js"></script>
-  <script>jQuery.noConflict(); jQuery(document).ready(function(){c$Document.m$ready_bang();});</script>
+  <!-- red_query startup code -->
+  <script type='text/javascript'>
+    jQuery.noConflict();
+    jQuery(document).ready(function(){
+      if (typeof c$Document !== "undefined")
+  	    c$Document.m$ready_bang();
+      else
+  	    throw "BIG problem with Red code";
+    });
+  </script>
   <script src="your_red_file.js"></script>
 
 Your main Red file should
@@ -15,4 +25,3 @@ Your main Red file should
 And your compilation should include
   red -I/path/to/red_query your_red_file
 
-(At the time of writing only my fork of Red supports -I. Learn more at http://github.com/julius/red)
