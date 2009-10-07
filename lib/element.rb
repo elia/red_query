@@ -26,7 +26,11 @@ class Element < Array
   end
   
   def self.from_html(html)
-    Element.new(`jQuery(#{html}.__value__)`)
+    Element.new(jq_native_from_html(html))
+  end
+  
+  def self.jq_native_from_html(html)
+    `jQuery(#{html}.__value__)`
   end
   
   # returns attr('id') of element. if none exists, one will be assigned
