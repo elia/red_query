@@ -235,6 +235,14 @@ class Element < Array
     end
   end
 
+  def scroll_top(pos = nil)
+    if pos.nil?
+      `#{@jq_native}.scrollTop()`
+    else
+      `#{@jq_native}.scrollTop(#{pos})`
+    end
+  end
+
   def value(str = nil)
     if str.nil?
       String.new(`#{@jq_native}.val()`)
