@@ -94,12 +94,13 @@ class Element < Array
   end
 
   def find(css_selector)
-    Element.new(`#{@jq_native}.find(#{css_selector}.__value__)`)
+    e = Element.new(`#{@jq_native}.find(#{css_selector}.__value__)`)
+    raise "[red_query/Element.find] Not found: #{css_selector}" unless e.length > 0
+    return e
   end
   
   def find_first(css_selector)
     result = find(css_selector)
-    throw "[red_query] not found: #{css_selector}" unless result
     # return nil unless result
     result[0]
   end
@@ -186,11 +187,18 @@ class Element < Array
     `#{@jq_native}.mouseup(function (event) { return #{callback}.m$call(event); })`
   end
   
+  def hover(over_block, out_block)
+    over_fn = mouse_event(over_block)
+    out_fn = mouse_event(out_block)
+    `#{@jq_native}.hover(function(event){return #{over_fn}.m$call(event);}, function(event){return #{out_fn}.m$call(event);})`
+  end
+
+  # only for jquery 1.3+
   # def mouse_enter(&block)
   #   callback = mouse_event(block)
   #   `#{@jq_native}.mouseenter(function (event) { return #{callback}.m$call(event); })`
   # end
-  
+  # 
   # def mouse_leave(&block)
   #   callback = mouse_event(block)
   #   `#{@jq_native}.mouseleave(function (event) { return #{callback}.m$call(event); })`
@@ -239,7 +247,8 @@ class Element < Array
     if pos.nil?
       `#{@jq_native}.scrollTop()`
     else
-      `#{@jq_native}.scrollTop(#{pos})`
+      # `#{@jq_native}.scrollTop(#{pos})`
+      `#{@jq_native}.animate({scrollTop: #{pos}}, 500, "swing")`
     end
   end
 
@@ -256,6 +265,6 @@ class Element < Array
   end
 
   def parent
-    Element.new(`#{@jq_native}.parent()`)
+    Element.new(`jQuery(#{@jq_native}.parent().get(0))`)
   end
 end
