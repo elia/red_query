@@ -95,7 +95,7 @@ class Element < Array
 
   def find(css_selector)
     e = Element.new(`#{@jq_native}.find(#{css_selector}.__value__)`)
-    raise "[red_query/Element.find] Not found: #{css_selector}" unless e.length > 0
+#    raise "[red_query/Element.find] Not found: #{css_selector}" unless e.length > 0
     return e
   end
   

@@ -1,4 +1,4 @@
-require 'lib/element'
+require 'element'
 
 module Document
   def self.as_element
