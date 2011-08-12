@@ -1,11 +1,14 @@
-= jQuery based Framework for Red
+# jQuery based Framework for Red
 
 Provides DOM, Ajax, JSON functionality for Red. Heavy usage of jQuery.
 Its been developed for my personal fork of Red: http://github.com/julius/red
 
-=== Usage
+## Usage
 
-Of course you need jQuery and your own source. In addition you need a little startup code.
+Of course you need jQuery and your own source. 
+In addition you need a little startup code.
+
+``` html
   <script src="jquery.js"></script>
   <!-- red_query startup code -->
   <script type='text/javascript'>
@@ -18,10 +21,13 @@ Of course you need jQuery and your own source. In addition you need a little sta
     });
   </script>
   <script src="your_red_file.js"></script>
+```
 
 Your main Red file should
-  require 'red_query'
+
+    require 'red_query'
 
 And your compilation should include
-  red -I/path/to/red_query your_red_file
+
+    red -I/path/to/red_query your_red_file
 
